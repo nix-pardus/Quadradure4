@@ -1,0 +1,322 @@
+﻿<Window
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Quadradure4"
+        xmlns:local2="clr-namespace:Quadradure4.ViewModel"
+        xmlns:col="clr-namespace:System.Collections;assembly=mscorlib"
+        xmlns:Converters="clr-namespace:Quadradure4.ViewModel.Converters" x:Class="Quadradure4.MainWindow"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="1200" Closed="Window_Closed" Loaded="Window_Loaded">
+    <Window.Resources>
+        <local2:ApplicationViewModel x:Key="wd"/>
+        <Converters:RemainderOfPyramidsConverter x:Key="RemainderOfPyramidsConverter"/>
+        <Converters:RemainderOfBoxesConverter x:Key="RemainderOfBoxesConverter"/>
+        <Converters:RemainderOfPrivalsConverter x:Key="RemainderOfPrivalsConverter"/>
+        <Converters:RublesConverter x:Key="RublesConverter"/>
+        <Converters:CurrentMonthIndexConverter x:Key="CurrentMonthIndexConverter"/>
+
+        <Style TargetType="{x:Type TextBox}" x:Key="textBoxStyle">
+            <Setter Property="Background" Value="WhiteSmoke"/>
+            <Setter Property="Foreground" Value="Black"/>
+        </Style>
+        <Style TargetType="{x:Type TextBlock}" x:Key="textBlockStyle">
+            <Setter Property="Foreground" Value="WhiteSmoke"/>
+            <Setter Property="FontFamily" Value="Artifakt Element Hair"/>
+            <Setter Property="FontSize" Value="14"/>
+        </Style>
+
+        <Style x:Key="RoundCorner" TargetType="{x:Type Button}">
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Padding" Value="1"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Grid x:Name="grid">
+                            <Border x:Name="border" CornerRadius="3" BorderBrush="Black" BorderThickness="1">
+                                <Border.Background>
+                                    <RadialGradientBrush GradientOrigin="0.496,1.052">
+                                        <RadialGradientBrush.RelativeTransform>
+                                            <TransformGroup>
+                                                <ScaleTransform CenterX="0.5" CenterY="0.5" ScaleX="1.5" ScaleY="1.5"/>
+                                                <TranslateTransform X="0.02" Y="0.3"/>
+                                            </TransformGroup>
+                                        </RadialGradientBrush.RelativeTransform>
+                                        <GradientStop Offset="0.1" Color="#FFFFFFFF"/>
+                                        <GradientStop Offset="1.1" Color="#00000000"/>
+                                    </RadialGradientBrush>
+                                </Border.Background>
+                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" Margin="10" TextElement.FontWeight="Medium"/>
+                            </Border>
+
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter Property="Background" TargetName="border">
+                                    <Setter.Value>
+                                        <RadialGradientBrush GradientOrigin="0.496,1.052">
+                                            <RadialGradientBrush.RelativeTransform>
+                                                <TransformGroup>
+                                                    <ScaleTransform CenterX="0.5" CenterY="0.5" ScaleX="1.5" ScaleY="1.5"/>
+                                                    <TranslateTransform X="0.02" Y="0.3"/>
+                                                </TransformGroup>
+                                            </RadialGradientBrush.RelativeTransform>
+                                            <GradientStop Offset="0.3" Color="#67526E"/>
+                                            <GradientStop Offset="1.1" Color="#00000000"/>
+                                        </RadialGradientBrush>
+                                    </Setter.Value>
+                                </Setter>
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="BorderBrush" TargetName="border" Value="#544858"/>
+
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Opacity" TargetName="grid" Value="0.25"/>
+                            </Trigger>
+
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+    </Window.Resources>
+
+    <Grid Background="#FF34343A">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <ToolBar Grid.Row="0" Background="#FF6D6182">
+            <StackPanel Orientation="Horizontal" Margin="10 5">
+                <Label Content="Месяц"/>
+                <ComboBox x:Name="cbMonths" Width="80" Margin="0 0 5 0" SelectedIndex="{Binding Now, Converter={StaticResource CurrentMonthIndexConverter}}" SelectionChanged="cbMonths_SelectionChanged">
+                    <ComboBoxItem Content="Январь"/>
+                    <ComboBoxItem Content="Февраль"/>
+                    <ComboBoxItem Content="Март"/>
+                    <ComboBoxItem Content="Апрель"/>
+                    <ComboBoxItem Content="Май"/>
+                    <ComboBoxItem Content="Июнь"/>
+                    <ComboBoxItem Content="Июль"/>
+                    <ComboBoxItem Content="Август"/>
+                    <ComboBoxItem Content="Сентябрь"/>
+                    <ComboBoxItem Content="Октябрь"/>
+                    <ComboBoxItem Content="Ноябрь"/>
+                    <ComboBoxItem Content="Декабрь"/>
+                </ComboBox>
+                <Label Content="Год"/>
+                <ComboBox x:Name="cbYears" Width="60" ItemsSource="{Binding Years}" SelectionChanged="cbMonths_SelectionChanged">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Year}"/>
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+                <Separator Margin="0" Width="30" Background="Black" RenderTransformOrigin="0.5,0.5">
+                    <Separator.RenderTransform>
+                        <TransformGroup>
+                            <ScaleTransform/>
+                            <SkewTransform/>
+                            <RotateTransform Angle="90"/>
+                            <TranslateTransform/>
+                        </TransformGroup>
+                    </Separator.RenderTransform>
+                </Separator>
+                <Expander x:Name="expander">
+                    <Expander.Header>
+                        <TextBlock Text="Все работники"/>
+                    </Expander.Header>
+                    <Popup PlacementTarget="{Binding ElementName=expander}" Placement="Bottom" IsOpen="{Binding IsExpanded, ElementName=expander}">
+                        <ScrollViewer ScrollViewer.VerticalScrollBarVisibility="Auto" HorizontalAlignment="Stretch" Background="White">
+                            <StackPanel MinWidth="100" Margin="5">
+                                <ListBox x:Name="lBoxPersons" ItemsSource="{Binding Persons}" Margin="0 0 0 5" SelectionChanged="lBoxPersons_SelectionChanged">
+                                    <ListBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding Name}"/>
+                                        </DataTemplate>
+                                    </ListBox.ItemTemplate>
+                                </ListBox>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="100"/>
+                                        <ColumnDefinition Width="100"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition/>
+                                        <RowDefinition/>
+                                    </Grid.RowDefinitions>
+                                    <TextBox Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" x:Name="tBoxNewPerson" Margin="0 0 0 5" TextChanged="tBoxNewPerson_TextChanged" ToolTip="Имя нового работника"/>
+                                    <Button x:Name="btnAddNewPerson" Grid.Column="0" Grid.Row="1" Content="Добавить" Padding="5" Margin="0 0 5 0" IsEnabled="False" Click="btnAddNewPerson_Click"/>
+                                    <Button x:Name="btnDeletePerson" Grid.Column="1" Grid.Row="1" Content="Удалить" Padding="5" IsEnabled="False" Click="btnDeletePerson_Click"/>
+                                </Grid>
+                            </StackPanel>
+                        </ScrollViewer>
+                    </Popup>
+                </Expander>
+            </StackPanel>
+        </ToolBar>
+
+        <ListView Name="listView" Grid.Row="1" ItemsSource="{Binding WorkingDays}" Background="#FF34343A" HorizontalContentAlignment="Stretch" VirtualizingPanel.ScrollUnit="Pixel">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel Name="sp1">
+                        <StackPanel Margin="5">
+                            <StackPanel.Effect>
+                                <DropShadowEffect BlurRadius="20" Direction="315" RenderingBias="Quality" ShadowDepth="4" Opacity="0.2"/>
+                            </StackPanel.Effect>
+                            <Border BorderThickness="1" BorderBrush="Gray" Padding="10" CornerRadius="5" Background="#FF5D585F">
+                                <StackPanel Orientation="Horizontal">
+                                    <StackPanel Orientation="Horizontal" Margin="0 0 50 0">
+                                        <StackPanel VerticalAlignment="Center" Margin="0 0 30 0">
+                                            <Border BorderBrush="Black" BorderThickness="1" Padding="5" Width="130" Height="35" CornerRadius="2" Background="#FF34343A">
+                                                <TextBlock FontSize="16" Text="{Binding Date, StringFormat=dd MMM yyyy}" HorizontalAlignment="Center" Style="{StaticResource textBlockStyle}"/>
+                                            </Border>
+                                        </StackPanel>
+                                        <StackPanel Margin="10 0 0 0">
+                                            <TextBlock Text="Квадратура:" HorizontalAlignment="Center" VerticalAlignment="Center" Style="{StaticResource textBlockStyle}"/>
+                                            <Grid Margin="0 10 0 10" Name="grid">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition/>
+                                                    <ColumnDefinition/>
+                                                    <ColumnDefinition/>
+                                                </Grid.ColumnDefinitions>
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition/>
+                                                    <RowDefinition/>
+                                                    <RowDefinition/>
+                                                    <RowDefinition/>
+                                                </Grid.RowDefinitions>
+                                                <TextBlock Grid.Row="0" Grid.Column="1" Text="Всего" TextAlignment="Center" Style="{StaticResource textBlockStyle}"/>
+                                                <TextBlock Grid.Row="0" Grid.Column="2" Text="Нераспределенная" Style="{StaticResource textBlockStyle}"/>
+                                                <TextBlock Grid.Row="1" Grid.Column="0" Text="Пирамиды: " VerticalAlignment="Center" Style="{StaticResource textBlockStyle}"/>
+                                                <TextBlock Grid.Row="2" Grid.Column="0" Text="Ящики: " VerticalAlignment="Center" Style="{StaticResource textBlockStyle}"/>
+                                                <TextBlock Grid.Row="3" Grid.Column="0" Text="Привалы: " VerticalAlignment="Center" Style="{StaticResource textBlockStyle}"/>
+                                                <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding QPyramids, UpdateSourceTrigger=PropertyChanged}" FontSize="16" Width="70" HorizontalAlignment="Center" TextAlignment="Center" Style="{StaticResource textBoxStyle}" TextChanged="TextBox_TextChanged_1" LostFocus="TextBox_LostFocus" KeyDown="TextBox_KeyDown_1" GotFocus="TextBox_GotFocus"/>
+                                                <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding QBoxes, UpdateSourceTrigger=PropertyChanged}" FontSize="16" Width="70" HorizontalAlignment="Center" TextAlignment="Center" Style="{StaticResource textBoxStyle}" TextChanged="TextBox_TextChanged_1" LostFocus="TextBox_LostFocus" GotFocus="TextBox_GotFocus"/>
+                                                <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding QPrivals, UpdateSourceTrigger=PropertyChanged}" FontSize="16" Width="70" HorizontalAlignment="Center" TextAlignment="Center" Style="{StaticResource textBoxStyle}" TextChanged="TextBox_TextChanged_1" LostFocus="TextBox_LostFocus" GotFocus="TextBox_GotFocus"/>
+                                                <TextBox Name="tBoxPyr" IsEnabled="False" Grid.Row="1" Grid.Column="2" FontSize="16" Width="70" HorizontalAlignment="Center" TextAlignment="Center" IsReadOnly="True" Style="{StaticResource textBoxStyle}">
+                                                    <TextBox.Text>
+                                                        <MultiBinding Converter="{StaticResource RemainderOfPyramidsConverter}">
+                                                            <Binding Path="QPyramids"></Binding>
+                                                            <Binding Path="."></Binding>
+                                                        </MultiBinding>
+                                                    </TextBox.Text>
+                                                </TextBox>
+                                                <TextBox Name="tBoxBox" IsEnabled="False" Grid.Row="2" Grid.Column="2" FontSize="16" Width="70" HorizontalAlignment="Center" TextAlignment="Center" IsReadOnly="True" Style="{StaticResource textBoxStyle}">
+                                                    <TextBox.Text>
+                                                        <MultiBinding Converter="{StaticResource RemainderOfBoxesConverter}">
+                                                            <Binding Path="QBoxes"></Binding>
+                                                            <Binding Path="."></Binding>
+                                                        </MultiBinding>
+                                                    </TextBox.Text>
+                                                </TextBox>
+                                                <TextBox Name="tBoxPriv" IsEnabled="False" Grid.Row="3" Grid.Column="2" FontSize="16" Width="70" HorizontalAlignment="Center" TextAlignment="Center" IsReadOnly="True" Style="{StaticResource textBoxStyle}">
+                                                    <TextBox.Text>
+                                                        <MultiBinding Converter="{StaticResource RemainderOfPrivalsConverter}">
+                                                            <Binding Path="QPrivals"></Binding>
+                                                            <Binding Path="."></Binding>
+                                                        </MultiBinding>
+                                                    </TextBox.Text>
+                                                </TextBox>
+                                            </Grid>
+                                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                                <TextBlock Text="В рублях: " Style="{StaticResource textBlockStyle}"/>
+                                                <TextBlock Text="{Binding Converter={StaticResource RublesConverter}}" Style="{StaticResource textBlockStyle}"/>
+                                            </StackPanel>
+                                        </StackPanel>
+                                    </StackPanel>
+                                    <StackPanel Margin="10 0 0 0">
+                                        <TextBlock Text="Кто сколько заработал:" HorizontalAlignment="Center" Style="{StaticResource textBlockStyle}"/>
+                                        <DataGrid ItemsSource="{Binding SingleEntries, UpdateSourceTrigger=PropertyChanged}" AutoGenerateColumns="False" CurrentCellChanged="DataGrid_CurrentCellChanged" CanUserAddRows="False" CanUserDeleteRows="False">
+                                            <DataGrid.Columns>
+                                                <DataGridTextColumn Header="Имя" Binding="{Binding Person.Name}" IsReadOnly="True">
+                                                    <DataGridTextColumn.HeaderStyle>
+                                                        <Style TargetType="{x:Type Control}">
+                                                            <Setter Property="Background" Value="#FF34343A"/>
+                                                            <Setter Property="Foreground" Value="WhiteSmoke"/>
+                                                            <Setter Property="FontFamily" Value="Artifakt Element Hair"/>
+                                                            <Setter Property="Padding" Value="5"/>
+                                                        </Style>
+                                                    </DataGridTextColumn.HeaderStyle>
+                                                    <DataGridTextColumn.ElementStyle>
+                                                        <Style TargetType="{x:Type TextBlock}">
+                                                            <Setter Property="Background" Value="#FF34343A"/>
+                                                            <Setter Property="Foreground" Value="WhiteSmoke"/>
+                                                            <Setter Property="FontFamily" Value="Artifakt Element Hair"/>
+                                                            <Setter Property="Padding" Value="3"/>
+                                                        </Style>
+                                                    </DataGridTextColumn.ElementStyle>
+                                                </DataGridTextColumn>
+                                                <DataGridTextColumn Header="Пирамиды" Binding="{Binding QPyramids, StringFormat=0.00, UpdateSourceTrigger=PropertyChanged}">
+                                                    <DataGridTextColumn.HeaderStyle>
+                                                        <Style TargetType="{x:Type Control}">
+                                                            <Setter Property="Background" Value="#FF34343A"/>
+                                                            <Setter Property="Foreground" Value="WhiteSmoke"/>
+                                                            <Setter Property="FontFamily" Value="Artifakt Element Hair"/>
+                                                            <Setter Property="Padding" Value="5"/>
+                                                        </Style>
+                                                    </DataGridTextColumn.HeaderStyle>
+                                                    <DataGridTextColumn.ElementStyle>
+                                                        <Style TargetType="{x:Type TextBlock}">
+                                                            <Setter Property="Background" Value="#FF5D585F"/>
+                                                            <Setter Property="Foreground" Value="WhiteSmoke"/>
+                                                            <Setter Property="FontFamily" Value="Artifakt Element Hair"/>
+                                                            <Setter Property="Padding" Value="3"/>
+                                                        </Style>
+                                                    </DataGridTextColumn.ElementStyle>
+                                                </DataGridTextColumn>
+                                                <DataGridTextColumn Header="Ящики" Binding="{Binding QBoxes, StringFormat=0.00}">
+                                                    <DataGridTextColumn.HeaderStyle>
+                                                        <Style TargetType="{x:Type Control}">
+                                                            <Setter Property="Background" Value="#FF34343A"/>
+                                                            <Setter Property="Foreground" Value="WhiteSmoke"/>
+                                                            <Setter Property="FontFamily" Value="Artifakt Element Hair"/>
+                                                            <Setter Property="Padding" Value="5"/>
+                                                        </Style>
+                                                    </DataGridTextColumn.HeaderStyle>
+                                                    <DataGridTextColumn.ElementStyle>
+                                                        <Style TargetType="{x:Type TextBlock}">
+                                                            <Setter Property="Background" Value="#FF5D585F"/>
+                                                            <Setter Property="Foreground" Value="WhiteSmoke"/>
+                                                            <Setter Property="FontFamily" Value="Artifakt Element Hair"/>
+                                                            <Setter Property="Padding" Value="3"/>
+                                                        </Style>
+                                                    </DataGridTextColumn.ElementStyle>
+                                                </DataGridTextColumn>
+                                                <DataGridTextColumn Header="Привалы" Binding="{Binding QPrivals, StringFormat=0.00}">
+                                                    <DataGridTextColumn.HeaderStyle>
+                                                        <Style TargetType="{x:Type Control}">
+                                                            <Setter Property="Background" Value="#FF34343A"/>
+                                                            <Setter Property="Foreground" Value="WhiteSmoke"/>
+                                                            <Setter Property="FontFamily" Value="Artifakt Element Hair"/>
+                                                            <Setter Property="Padding" Value="5"/>
+                                                        </Style>
+                                                    </DataGridTextColumn.HeaderStyle>
+                                                    <DataGridTextColumn.ElementStyle>
+                                                        <Style TargetType="{x:Type TextBlock}">
+                                                            <Setter Property="Background" Value="#FF5D585F"/>
+                                                            <Setter Property="Foreground" Value="WhiteSmoke"/>
+                                                            <Setter Property="FontFamily" Value="Artifakt Element Hair"/>
+                                                            <Setter Property="Padding" Value="3"/>
+                                                        </Style>
+                                                    </DataGridTextColumn.ElementStyle>
+                                                </DataGridTextColumn>
+                                            </DataGrid.Columns>
+                                        </DataGrid>
+                                    </StackPanel>
+                                    <StackPanel Margin="30 0 0 0" VerticalAlignment="Center">
+                                        <Button Content="Распределить поровну" Padding="5" Style="{DynamicResource RoundCorner}" Click="Button_Click"/>
+                                    </StackPanel>
+                                </StackPanel>
+                            </Border>
+                        </StackPanel>
+                    </StackPanel>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+    </Grid>
+</Window>

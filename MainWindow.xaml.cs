@@ -170,7 +170,6 @@ namespace Quadradure4
 
 
 
-
         //public T GetAncestorOfType<T>(FrameworkElement child) where T : FrameworkElement
         //{
         //    var parent = VisualTreeHelper.GetParent(child);

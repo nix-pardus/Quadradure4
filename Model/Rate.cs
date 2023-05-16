@@ -8,28 +8,46 @@ using System.Threading.Tasks;
 
 namespace Quadradure4.Model
 {
+    public enum Сontainer
+    {
+        Pyramid,
+        Box,
+        Prival
+    }
     public class Rate : INotifyPropertyChanged
     {
-        string name = null!;
+        Сontainer container;
         decimal price;
+        private bool isWeekend;
+
         public int Id { get; set; }
 
-        public string Name
+        public Сontainer Сontainer
         {
-            get => name;
+            get => container;
             set
             {
-                name = value;
+                container = value;
                 OnPropertyChanged();
             }
         }
 
-        public decimal Price 
+        public decimal Price
         {
             get => price;
             set
             {
                 price = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public bool IsWeekend
+        {
+            get => isWeekend;
+            set
+            {
+                isWeekend = value;
                 OnPropertyChanged();
             }
         }

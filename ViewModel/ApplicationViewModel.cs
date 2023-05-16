@@ -21,6 +21,7 @@ namespace Quadradure4.ViewModel
     {
         private ObservableCollection<WorkingDay> workingDays = null!;
         private ObservableCollection<Person> persons = null!;
+        private ObservableCollection<Rate> rates = null!;
 
         public ObservableCollection<WorkingDay> WorkingDays
         {
@@ -37,6 +38,15 @@ namespace Quadradure4.ViewModel
             set
             {
                 persons = value;
+                OnPropertyChanged();
+            }
+        }
+        public ObservableCollection<Rate> Rates
+        {
+            get => rates;
+            set
+            {
+                rates = value;
                 OnPropertyChanged();
             }
         }
@@ -70,9 +80,9 @@ namespace Quadradure4.ViewModel
                 }
 
 
-
-
-                db.Persons.Load();
+                db.Rate.Load();
+                Rates = db.Rate.Local.ToObservableCollection();
+                db.Persons.Where(x => x.Status == Status.Active).Load();
                 Persons = db.Persons.Local.ToObservableCollection();
                 db.Workdays.Include(x => x.SingleEntries).Load();
                 WorkingDays = db.Workdays.Local.ToObservableCollection();
@@ -144,7 +154,7 @@ namespace Quadradure4.ViewModel
         {
             using (ApplicationContext db = new ApplicationContext())
             {
-                db.Persons.Load();
+                db.Persons.Where(x => x.Status == Status.Active).Load();
                 Persons = db.Persons.Local.ToObservableCollection();
             }
         }
@@ -185,11 +195,14 @@ namespace Quadradure4.ViewModel
         {
             using (ApplicationContext db = new ApplicationContext())
             {
-                db.Persons.Remove(person);
+                person.Status = Status.Dismissed;
+                db.Persons.Update(person);
                 db.SaveChanges();
             }
             LoadPersons();
         }
+
+
         #region prop chan
         public event PropertyChangedEventHandler? PropertyChanged;
         protected virtual void OnPropertyChanged([CallerMemberName] string prop = "")

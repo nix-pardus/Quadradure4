@@ -23,13 +23,18 @@ namespace Quadradure4.ViewModel.Converters
             }
             WorkingDay? workingDay = value as WorkingDay;
             decimal rubles = 0;
-            //здесь надо добавить в условие праздничные дни
             if (rates.Count > 0)
             {
-                if (workingDay?.Date.DayOfWeek == DayOfWeek.Sunday || workingDay?.Date.DayOfWeek == DayOfWeek.Saturday)
-                    rubles += workingDay.QPyramids * rates[3].Price + workingDay.QPrivals * rates[4].Price + workingDay.QBoxes * rates[5].Price;
+                if (workingDay!.Date.DayOfWeek == DayOfWeek.Sunday || workingDay!.Date.DayOfWeek == DayOfWeek.Saturday || workingDay!.IsHolidayDay)
+                    rubles +=
+                        workingDay.QPyramids * rates.Where(x => x.IsWeekend && x.Сontainer == Сontainer.Pyramid).Last().Price +
+                        workingDay.QPrivals * rates.Where(x => x.IsWeekend && x.Сontainer == Сontainer.Prival).Last().Price +
+                        workingDay.QBoxes * rates.Where(x => x.IsWeekend && x.Сontainer == Сontainer.Box).Last().Price;
                 else
-                    rubles += workingDay!.QPyramids * rates[0].Price + workingDay.QPrivals * rates[1].Price + workingDay.QBoxes * rates[2].Price;
+                    rubles +=
+                        workingDay.QPyramids * rates.Where(x => !x.IsWeekend && x.Сontainer == Сontainer.Pyramid).Last().Price +
+                        workingDay.QPrivals * rates.Where(x => !x.IsWeekend && x.Сontainer == Сontainer.Prival).Last().Price +
+                        workingDay.QBoxes * rates.Where(x => !x.IsWeekend && x.Сontainer == Сontainer.Box).Last().Price;
             }
             return rubles;
         }

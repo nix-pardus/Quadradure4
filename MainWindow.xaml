@@ -10,18 +10,23 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="1200" Closed="Window_Closed" Loaded="Window_Loaded">
     <Window.Resources>
-        <local2:ApplicationViewModel x:Key="wd"/>
         <Converters:RemainderOfPyramidsConverter x:Key="RemainderOfPyramidsConverter"/>
         <Converters:RemainderOfBoxesConverter x:Key="RemainderOfBoxesConverter"/>
         <Converters:RemainderOfPrivalsConverter x:Key="RemainderOfPrivalsConverter"/>
         <Converters:RublesConverter x:Key="RublesConverter"/>
         <Converters:CurrentMonthIndexConverter x:Key="CurrentMonthIndexConverter"/>
+        <Converters:WeekendConverter x:Key="WeekendConverter"/>
 
         <Style TargetType="{x:Type TextBox}" x:Key="textBoxStyle">
             <Setter Property="Background" Value="WhiteSmoke"/>
             <Setter Property="Foreground" Value="Black"/>
         </Style>
         <Style TargetType="{x:Type TextBlock}" x:Key="textBlockStyle">
+            <Setter Property="Foreground" Value="WhiteSmoke"/>
+            <Setter Property="FontFamily" Value="Artifakt Element Hair"/>
+            <Setter Property="FontSize" Value="14"/>
+        </Style>
+        <Style TargetType="{x:Type CheckBox}" x:Key="checkBoxStyle">
             <Setter Property="Foreground" Value="WhiteSmoke"/>
             <Setter Property="FontFamily" Value="Artifakt Element Hair"/>
             <Setter Property="FontSize" Value="14"/>
@@ -157,6 +162,63 @@
                         </ScrollViewer>
                     </Popup>
                 </Expander>
+                <Expander x:Name="expanderRates">
+                    <Expander.Header>
+                        <TextBlock Text="Расценки"/>
+                    </Expander.Header>
+                    <Popup PlacementTarget="{Binding ElementName=expanderRates}" Placement="Bottom" IsOpen="{Binding IsExpanded, ElementName=expanderRates}">
+                        <ScrollViewer ScrollViewer.VerticalScrollBarVisibility="Auto" HorizontalAlignment="Stretch" Background="White">
+                            <StackPanel>
+                                <StackPanel Orientation="Horizontal">
+                                    <GroupBox Header="Будние дни">
+                                        <StackPanel Orientation="Vertical">
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition/>
+                                                    <ColumnDefinition/>
+                                                </Grid.ColumnDefinitions>
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition/>
+                                                    <RowDefinition/>
+                                                    <RowDefinition/>
+                                                </Grid.RowDefinitions>
+                                                <TextBlock Text="Пирамиды" Grid.Column="0" Grid.Row="0" Margin="0 5 5 0"/>
+                                                <TextBlock Text="Ящики" Grid.Column="0" Grid.Row="1" Margin="0 5 5 0"/>
+                                                <TextBlock Text="Привалы" Grid.Column="0" Grid.Row="2" Margin="0 5 5 0"/>
+                                                <TextBox x:Name="tBoxPyramidWeekday" TextAlignment="Center" Width="50" Grid.Column="1" Grid.Row="0" Margin="0 5 0 0"/>
+                                                <TextBox x:Name="tBoxBoxWeekday" TextAlignment="Center" Width="50" Grid.Column="1" Grid.Row="1" Margin="0 5 0 0"/>
+                                                <TextBox x:Name="tBoxPrivalWeekday" TextAlignment="Center" Width="50" Grid.Column="1" Grid.Row="2" Margin="0 5 0 0"/>
+                                            </Grid>
+                                        </StackPanel>
+                                    </GroupBox>
+                                    <GroupBox Header="Выходные дни">
+                                        <StackPanel Orientation="Vertical">
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition/>
+                                                    <ColumnDefinition/>
+                                                </Grid.ColumnDefinitions>
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition/>
+                                                    <RowDefinition/>
+                                                    <RowDefinition/>
+                                                </Grid.RowDefinitions>
+                                                <TextBlock Text="Пирамиды" Grid.Column="0" Grid.Row="0" Margin="0 5 5 0"/>
+                                                <TextBlock Text="Ящики" Grid.Column="0" Grid.Row="1" Margin="0 5 5 0"/>
+                                                <TextBlock Text="Привалы" Grid.Column="0" Grid.Row="2" Margin="0 5 5 0"/>
+                                                <TextBox x:Name="tBoxPyramidWeekend" TextAlignment="Center" Width="50" Grid.Column="1" Grid.Row="0" Margin="0 5 0 0"/>
+                                                <TextBox x:Name="tBoxBoxWeekend" TextAlignment="Center" Width="50" Grid.Column="1" Grid.Row="1" Margin="0 5 0 0"/>
+                                                <TextBox x:Name="tBoxPrivalWeekend" TextAlignment="Center" Width="50" Grid.Column="1" Grid.Row="2" Margin="0 5 0 0"/>
+                                            </Grid>
+                                        </StackPanel>
+                                    </GroupBox>
+                                </StackPanel>
+                                <Button Content="Сохранить"/>
+                                <Label Name="labelRatesErrors"/>
+                            </StackPanel>
+                        </ScrollViewer>
+                    </Popup>
+                </Expander>
             </StackPanel>
         </ToolBar>
 
@@ -175,6 +237,8 @@
                                             <Border BorderBrush="Black" BorderThickness="1" Padding="5" Width="130" Height="35" CornerRadius="2" Background="#FF34343A">
                                                 <TextBlock FontSize="16" Text="{Binding Date, StringFormat=dd MMM yyyy}" HorizontalAlignment="Center" Style="{StaticResource textBlockStyle}"/>
                                             </Border>
+                                            <TextBlock Margin="0 5 0 0" Style="{StaticResource textBlockStyle}" Text="{Binding Date, Converter={StaticResource WeekendConverter}}"/>
+                                            <CheckBox Margin="0 5 0 0" Content="Праздничный день" IsChecked="{Binding IsHolidayDay}" Style="{StaticResource checkBoxStyle}"/>
                                         </StackPanel>
                                         <StackPanel Margin="10 0 0 0">
                                             <TextBlock Text="Квадратура:" HorizontalAlignment="Center" VerticalAlignment="Center" Style="{StaticResource textBlockStyle}"/>

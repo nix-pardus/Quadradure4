@@ -12,7 +12,6 @@ namespace Quadradure4.Model
     {
         Person _person = null!;
         WorkingDay _workingDay = null!;
-        //Rate _rate = null!;
         decimal qPyramids;
         decimal qBoxes;
         decimal qPrivals;
@@ -37,16 +36,6 @@ namespace Quadradure4.Model
                 OnPropertyChanged();
             }
         }
-
-        //public Rate Rate
-        //{
-        //    get => _rate;
-        //    set
-        //    {
-        //        _rate = value;
-        //        OnPropertyChanged("Rate");
-        //    }
-        //}
 
         public decimal QPyramids
         {

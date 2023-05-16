@@ -16,9 +16,11 @@ namespace Quadradure4.Model
         decimal qPyramids;
         decimal qBoxes;
         decimal qPrivals;
+        private bool isHolidayDay;
+
         public int Id { get; set; }
-        
-        public DateTime Date 
+
+        public DateTime Date
         {
             get => date;
             set
@@ -58,12 +60,23 @@ namespace Quadradure4.Model
             }
         }
 
+        public bool IsHolidayDay 
+        { 
+            get => isHolidayDay;
+            set
+            {
+                isHolidayDay = value;
+                OnPropertyChanged();
+            }
+
+        }
+
         public List<SingleEntry> SingleEntries { get; set; } = null!;
         #region prop chan
         public event PropertyChangedEventHandler? PropertyChanged;
-        public void OnPropertyChanged([CallerMemberName]string prop = "")
+        public void OnPropertyChanged([CallerMemberName] string prop = "")
         {
-            if(PropertyChanged != null)
+            if (PropertyChanged != null)
             {
                 PropertyChanged(this, new PropertyChangedEventArgs(prop));
             }

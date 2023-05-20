@@ -16,6 +16,7 @@
         <Converters:RublesConverter x:Key="RublesConverter"/>
         <Converters:CurrentMonthIndexConverter x:Key="CurrentMonthIndexConverter"/>
         <Converters:WeekendConverter x:Key="WeekendConverter"/>
+        <Converters:TextDecimalConverter x:Key="TextDecimalConverter"/>
 
         <Style TargetType="{x:Type TextBox}" x:Key="textBoxStyle">
             <Setter Property="Background" Value="WhiteSmoke"/>
@@ -169,8 +170,8 @@
                     <Popup PlacementTarget="{Binding ElementName=expanderRates}" Placement="Bottom" IsOpen="{Binding IsExpanded, ElementName=expanderRates}">
                         <ScrollViewer ScrollViewer.VerticalScrollBarVisibility="Auto" HorizontalAlignment="Stretch" Background="White">
                             <StackPanel>
-                                <StackPanel Orientation="Horizontal">
-                                    <GroupBox Header="Будние дни">
+                                <StackPanel Orientation="Horizontal" DataContext="{Binding Rates}">
+                                    <GroupBox Header="Будние дни11111111111">
                                         <StackPanel Orientation="Vertical">
                                             <Grid>
                                                 <Grid.ColumnDefinitions>
@@ -185,9 +186,9 @@
                                                 <TextBlock Text="Пирамиды" Grid.Column="0" Grid.Row="0" Margin="0 5 5 0"/>
                                                 <TextBlock Text="Ящики" Grid.Column="0" Grid.Row="1" Margin="0 5 5 0"/>
                                                 <TextBlock Text="Привалы" Grid.Column="0" Grid.Row="2" Margin="0 5 5 0"/>
-                                                <TextBox x:Name="tBoxPyramidWeekday" TextAlignment="Center" Width="50" Grid.Column="1" Grid.Row="0" Margin="0 5 0 0"/>
-                                                <TextBox x:Name="tBoxBoxWeekday" TextAlignment="Center" Width="50" Grid.Column="1" Grid.Row="1" Margin="0 5 0 0"/>
-                                                <TextBox x:Name="tBoxPrivalWeekday" TextAlignment="Center" Width="50" Grid.Column="1" Grid.Row="2" Margin="0 5 0 0"/>
+                                                <TextBox x:Name="tBoxPyramidWeekday" Text="{Binding [0].Price, Mode=OneWay}" TextAlignment="Center" Width="50" Grid.Column="1" Grid.Row="0" Margin="0 5 0 0"/>
+                                                <TextBox x:Name="tBoxBoxWeekday" Text="{Binding [1].Price, Mode=OneWay}" TextAlignment="Center" Width="50" Grid.Column="1" Grid.Row="1" Margin="0 5 0 0"/>
+                                                <TextBox x:Name="tBoxPrivalWeekday" Text="{Binding [2].Price, Mode=OneWay}" TextAlignment="Center" Width="50" Grid.Column="1" Grid.Row="2" Margin="0 5 0 0"/>
                                             </Grid>
                                         </StackPanel>
                                     </GroupBox>
@@ -206,14 +207,14 @@
                                                 <TextBlock Text="Пирамиды" Grid.Column="0" Grid.Row="0" Margin="0 5 5 0"/>
                                                 <TextBlock Text="Ящики" Grid.Column="0" Grid.Row="1" Margin="0 5 5 0"/>
                                                 <TextBlock Text="Привалы" Grid.Column="0" Grid.Row="2" Margin="0 5 5 0"/>
-                                                <TextBox x:Name="tBoxPyramidWeekend" TextAlignment="Center" Width="50" Grid.Column="1" Grid.Row="0" Margin="0 5 0 0"/>
-                                                <TextBox x:Name="tBoxBoxWeekend" TextAlignment="Center" Width="50" Grid.Column="1" Grid.Row="1" Margin="0 5 0 0"/>
-                                                <TextBox x:Name="tBoxPrivalWeekend" TextAlignment="Center" Width="50" Grid.Column="1" Grid.Row="2" Margin="0 5 0 0"/>
+                                                <TextBox x:Name="tBoxPyramidWeekend" Text="{Binding [3].Price, Mode=OneWay}" TextAlignment="Center" Width="50" Grid.Column="1" Grid.Row="0" Margin="0 5 0 0"/>
+                                                <TextBox x:Name="tBoxBoxWeekend" Text="{Binding [4].Price, Mode=OneWay}" TextAlignment="Center" Width="50" Grid.Column="1" Grid.Row="1" Margin="0 5 0 0"/>
+                                                <TextBox x:Name="tBoxPrivalWeekend" Text="{Binding [5].Price, Mode=OneWay}" TextAlignment="Center" Width="50" Grid.Column="1" Grid.Row="2" Margin="0 5 0 0"/>
                                             </Grid>
                                         </StackPanel>
                                     </GroupBox>
                                 </StackPanel>
-                                <Button Content="Сохранить"/>
+                                <Button Content="Сохранить" Click="Button_Click_1"/>
                                 <Label Name="labelRatesErrors"/>
                             </StackPanel>
                         </ScrollViewer>
@@ -238,7 +239,7 @@
                                                 <TextBlock FontSize="16" Text="{Binding Date, StringFormat=dd MMM yyyy}" HorizontalAlignment="Center" Style="{StaticResource textBlockStyle}"/>
                                             </Border>
                                             <TextBlock Margin="0 5 0 0" Style="{StaticResource textBlockStyle}" Text="{Binding Date, Converter={StaticResource WeekendConverter}}"/>
-                                            <CheckBox Margin="0 5 0 0" Content="Праздничный день" IsChecked="{Binding IsHolidayDay}" Style="{StaticResource checkBoxStyle}"/>
+                                            <CheckBox Margin="0 5 0 0" Content="Праздничный день" IsChecked="{Binding IsHolidayDay}" Style="{StaticResource checkBoxStyle}" Click="CheckBox_Click"/>
                                         </StackPanel>
                                         <StackPanel Margin="10 0 0 0">
                                             <TextBlock Text="Квадратура:" HorizontalAlignment="Center" VerticalAlignment="Center" Style="{StaticResource textBlockStyle}"/>
@@ -259,9 +260,9 @@
                                                 <TextBlock Grid.Row="1" Grid.Column="0" Text="Пирамиды: " VerticalAlignment="Center" Style="{StaticResource textBlockStyle}"/>
                                                 <TextBlock Grid.Row="2" Grid.Column="0" Text="Ящики: " VerticalAlignment="Center" Style="{StaticResource textBlockStyle}"/>
                                                 <TextBlock Grid.Row="3" Grid.Column="0" Text="Привалы: " VerticalAlignment="Center" Style="{StaticResource textBlockStyle}"/>
-                                                <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding QPyramids, UpdateSourceTrigger=PropertyChanged}" FontSize="16" Width="70" HorizontalAlignment="Center" TextAlignment="Center" Style="{StaticResource textBoxStyle}" TextChanged="TextBox_TextChanged_1" LostFocus="TextBox_LostFocus" KeyDown="TextBox_KeyDown_1" GotFocus="TextBox_GotFocus"/>
-                                                <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding QBoxes, UpdateSourceTrigger=PropertyChanged}" FontSize="16" Width="70" HorizontalAlignment="Center" TextAlignment="Center" Style="{StaticResource textBoxStyle}" TextChanged="TextBox_TextChanged_1" LostFocus="TextBox_LostFocus" GotFocus="TextBox_GotFocus"/>
-                                                <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding QPrivals, UpdateSourceTrigger=PropertyChanged}" FontSize="16" Width="70" HorizontalAlignment="Center" TextAlignment="Center" Style="{StaticResource textBoxStyle}" TextChanged="TextBox_TextChanged_1" LostFocus="TextBox_LostFocus" GotFocus="TextBox_GotFocus"/>
+                                                <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding QPyramids, Converter={StaticResource TextDecimalConverter}, UpdateSourceTrigger=PropertyChanged}" FontSize="16" Width="70" HorizontalAlignment="Center" TextAlignment="Center" Style="{StaticResource textBoxStyle}" TextChanged="TextBox_TextChanged_1" LostFocus="TextBox_LostFocus" KeyDown="TextBox_KeyDown_1" GotFocus="TextBox_GotFocus"/>
+                                                <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding QBoxes, Converter={StaticResource TextDecimalConverter}, UpdateSourceTrigger=PropertyChanged}" FontSize="16" Width="70" HorizontalAlignment="Center" TextAlignment="Center" Style="{StaticResource textBoxStyle}" TextChanged="TextBox_TextChanged_1" LostFocus="TextBox_LostFocus" GotFocus="TextBox_GotFocus"/>
+                                                <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding QPrivals, Converter={StaticResource TextDecimalConverter}, UpdateSourceTrigger=PropertyChanged}" FontSize="16" Width="70" HorizontalAlignment="Center" TextAlignment="Center" Style="{StaticResource textBoxStyle}" TextChanged="TextBox_TextChanged_1" LostFocus="TextBox_LostFocus" GotFocus="TextBox_GotFocus"/>
                                                 <TextBox Name="tBoxPyr" IsEnabled="False" Grid.Row="1" Grid.Column="2" FontSize="16" Width="70" HorizontalAlignment="Center" TextAlignment="Center" IsReadOnly="True" Style="{StaticResource textBoxStyle}">
                                                     <TextBox.Text>
                                                         <MultiBinding Converter="{StaticResource RemainderOfPyramidsConverter}">

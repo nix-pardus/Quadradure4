@@ -36,7 +36,7 @@ namespace Quadradure4.ViewModel.Converters
                         workingDay.QPrivals * rates.Where(x => !x.IsWeekend && x.Сontainer == Сontainer.Prival).Last().Price +
                         workingDay.QBoxes * rates.Where(x => !x.IsWeekend && x.Сontainer == Сontainer.Box).Last().Price;
             }
-            return rubles;
+            return rubles!;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

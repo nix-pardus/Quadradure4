@@ -9,6 +9,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
@@ -34,7 +35,7 @@ namespace Quadradure4
 
         }
 
-        private void TextBox_TextChanged_1(object sender, TextChangedEventArgs e)
+        private async void TextBox_TextChanged_1(object sender, TextChangedEventArgs e)
         {
             string text = ((TextBox)sender).Text;
             if (text.Contains('.') && text.Last() != '.')
@@ -45,6 +46,7 @@ namespace Quadradure4
             }
             ((ApplicationViewModel)DataContext).Save();
             var stackPanel = ((sender as TextBox)?.Parent as Grid)?.Parent as StackPanel;
+            await Task.Delay(50);
             var stackPanel2 = stackPanel?.Children[2] as StackPanel;
             TextBlock? textBlock = stackPanel2?.Children[1] as TextBlock;
             BindingOperations.GetBindingExpression(textBlock, TextBlock.TextProperty).UpdateTarget();
@@ -164,6 +166,47 @@ namespace Quadradure4
         private void btnDeletePerson_Click(object sender, RoutedEventArgs e)
         {
             ((ApplicationViewModel)DataContext).DeletePerson(lBoxPersons.SelectedItem as Person);
+        }
+
+        private async void Button_Click_1(object sender, RoutedEventArgs e)
+        {
+            if (!((ApplicationViewModel)DataContext).RatesUpdate(
+                tBoxPyramidWeekday.Text,
+                tBoxBoxWeekday.Text,
+                tBoxPrivalWeekday.Text,
+                tBoxPyramidWeekend.Text,
+                tBoxBoxWeekend.Text,
+                tBoxPrivalWeekend.Text))
+            {
+                labelRatesErrors.Content = "Error";
+                labelRatesErrors.Foreground = Brushes.Red;
+            }
+            else
+            {
+                labelRatesErrors.Content = "OK";
+                labelRatesErrors.Foreground = Brushes.Green;
+                await Task.Delay(1000);
+                labelRatesErrors.Content = "";
+                expanderRates.IsExpanded = false;
+                
+            }
+        }
+
+        private void CheckBox_Click(object sender, RoutedEventArgs e)
+        {
+            var stackPanel = (sender as CheckBox)?.Parent as StackPanel;
+            var stackPanel2 = stackPanel?.Parent as StackPanel;
+            var stackPanel3 = stackPanel2?.Children[1] as StackPanel;
+            var stackPanel4 = stackPanel3?.Children[2] as StackPanel;
+            TextBlock? textBlock = stackPanel4?.Children[1] as TextBlock;
+            BindingOperations.GetBindingExpression(textBlock, TextBlock.TextProperty).UpdateTarget();
+        }
+
+        
+
+        private void Grid_LostStylusCapture(object sender, StylusEventArgs e)
+        {
+            expander.IsExpanded = false;
         }
 
 

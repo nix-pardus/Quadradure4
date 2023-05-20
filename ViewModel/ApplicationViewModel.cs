@@ -102,24 +102,31 @@ namespace Quadradure4.ViewModel
                 int diffYear = now.Year - date.Year;
                 int currentYear = date.Year;
 
-                if (date.Month < now.Month)
+                if (diffYear >= 0 && date.Month < now.Month)
                 {
                     for (int month = date.Month + 1; month <= now.Month; month++)
                     {
                         int daysInMounth = DateTime.DaysInMonth(now.Year, month);
                         for (int day = 1; day <= daysInMounth; day++)
                         {
-                            db.Workdays.Add(new WorkingDay { Date = new DateTime(GetYear(month), month, day) });
+                            var wd = new WorkingDay { Date = new DateTime(GetYear(month), month, day) };
+                            db.Workdays.Add(wd);
+                            foreach(var person in db.Persons)
+                            {
+                                if(person.Status == Status.Dismissed) continue;
+                                db.SingleEntries.Add(new SingleEntry { Person = person, WorkingDay = wd });
+                            }
                         }
                     }
                     db.SaveChanges();
                 }
-                else if(date.Month > now.Month)
+                else if (date.Month > now.Month || !db.Workdays.Any())
                 {
                     for (int day = 1; day <= DateTime.DaysInMonth(now.Year, now.Month); day++)
                     {
                         db.Workdays.Add(new WorkingDay { Date = new DateTime(now.Year, now.Month, day) });
                     }
+                    db.SaveChanges();
                 }
                 int GetYear(int month)
                 {
@@ -202,11 +209,56 @@ namespace Quadradure4.ViewModel
             LoadPersons();
         }
 
+        internal bool RatesUpdate(string _pyramidWeekday, string _boxWeekday, string _privalWeekday, string _pyramidWeekend, string _boxWeekend, string _privalWeekend)
+        {
+            decimal pyramidWeekday, boxWeekday, privalWeekday, pyramidWeekend, boxWeekend, privalWeekend = 0;
+            if (!decimal.TryParse(_pyramidWeekday, out pyramidWeekday) ||
+            !decimal.TryParse(_boxWeekday, out boxWeekday) ||
+            !decimal.TryParse(_privalWeekday, out privalWeekday) ||
+            !decimal.TryParse(_pyramidWeekend, out pyramidWeekend) ||
+            !decimal.TryParse(_boxWeekend, out boxWeekend) ||
+            !decimal.TryParse(_privalWeekend, out privalWeekend))
+                return false;
+
+            List<Rate> rates = new List<Rate>();
+            using (ApplicationContext db = new ApplicationContext())
+            {
+                rates.AddRange(new[] {
+                    new Rate { Сontainer = Сontainer.Pyramid, IsWeekend = false, Price = pyramidWeekday },
+                    new Rate { Сontainer = Сontainer.Box, IsWeekend = false, Price = boxWeekday },
+                    new Rate { Сontainer = Сontainer.Prival, IsWeekend = false, Price = privalWeekday },
+                    new Rate { Сontainer = Сontainer.Pyramid, IsWeekend = true, Price = pyramidWeekend },
+                    new Rate { Сontainer = Сontainer.Box, IsWeekend = true, Price = boxWeekend },
+                    new Rate { Сontainer = Сontainer.Prival, IsWeekend = true, Price = privalWeekend } });
+                if (db.Rate.Any())
+                {
+                    int i = 0;
+                    foreach (Rate rate in db.Rate)
+                    {
+                        rates[i++].Id = rate.Id;
+                    }
+                }
+                else
+                {
+                    db.AddRange(rates);
+                    db.SaveChanges();
+                    return true;
+                }
+            }
+            using (ApplicationContext db = new ApplicationContext())
+            {
+                db.UpdateRange(rates);
+                db.SaveChanges();
+                return true;
+            }
+        }
+
 
         #region prop chan
         public event PropertyChangedEventHandler? PropertyChanged;
         protected virtual void OnPropertyChanged([CallerMemberName] string prop = "")
             => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
+
         #endregion
     }
 }
